@@ -54,7 +54,7 @@ class Account(object):
 
         return winning_posts, len(blog)
 
-    def avg_payment_per_post(self, skip=1, max_posts=10):
+    def avg_payout_per_post(self, skip=1, max_posts=10):
         total_payout = 0
         blog = self.get_blog()[skip:max_posts + skip]
         for post in blog:
@@ -63,7 +63,7 @@ class Account(object):
         if len(blog) == 0:
             return 0
 
-        return int(total_payout / len(blog))
+        return total_payout / len(blog)
 
     def time_to_whale(self, verbose=False, whale_sp=1e5, skip=1, max_posts=10, mean_of_recent=3):
         blog = self.get_blog()[skip:max_posts + skip]
@@ -157,7 +157,7 @@ class Account(object):
                 "rep": self.reputation(),
                 "followers": len(self.get_followers()),
                 "ttw": self.time_to_whale(max_posts=max_posts),
-                "ppp": self.avg_payment_per_post(max_posts=max_posts),
+                "ppp": self.avg_payout_per_post(max_posts=max_posts),
             },
         }
 
@@ -288,7 +288,7 @@ class Post(piston.steem.Post):
             "time_elapsed": self.time_elapsed(),
         }
 
-    def filter_tags(self, filter_by=('spam', 'test', 'nsfw')):
+    def contains_tags(self, filter_by=('spam', 'test', 'nsfw')):
         for tag in filter_by:
             if tag in self['_tags']:
                 return True

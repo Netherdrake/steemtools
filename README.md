@@ -1,4 +1,4 @@
-## Install a node (optional)
+## Install a local node (optional)
 Pull the docker images:
 ```
 docker pull teego/steem-wallet
