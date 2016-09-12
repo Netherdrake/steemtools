@@ -4,7 +4,9 @@ from steemtools.blockchain import Blockchain
 
 # parse the entire blockchain
 for event in Blockchain().replay():
-    print("\nEvent: '%s'\nTime: %s\nBody: %s" % (event['op_type'], event['timestamp'], event['op']))
+    print("Event: %s" % event['op_type'])
+    print("Time: %s" % event['timestamp'])
+    print("Body: %s\n" % event['op'])
 
 # give me just payments from specific day until now
 b = Blockchain()

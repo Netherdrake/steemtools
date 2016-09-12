@@ -184,12 +184,23 @@ class Account(object):
                 op = item[1]['op'][1]
                 timestamp = item[1]['timestamp']
 
-                if filter_by is None or filter_by == op_type:
-                    yield {
+                def construct_op():
+                    return {
                         "timestamp": timestamp,
                         "op_type": op_type,
                         "op": op,
                     }
+
+                if filter_by is None:
+                    yield construct_op()
+                else:
+                    if type(filter_by) is list:
+                        if op_type in filter_by:
+                            yield construct_op()
+
+                    if type(filter_by) is str:
+                        if op_type == filter_by:
+                            yield construct_op()
 
     def history2(self, filter_by=None, limit=1000):
         item_id_repeat = 0
@@ -211,12 +222,23 @@ class Account(object):
             op = item[1]['op'][1]
             timestamp = item[1]['timestamp']
 
-            if filter_by is None or filter_by == op_type:
-                yield {
+            def construct_op():
+                return {
                     "timestamp": timestamp,
                     "op_type": op_type,
                     "op": op,
                 }
+
+            if filter_by is None:
+                yield construct_op()
+            else:
+                if type(filter_by) is list:
+                    if op_type in filter_by:
+                        yield construct_op()
+
+                if type(filter_by) is str:
+                    if op_type == filter_by:
+                        yield construct_op()
 
     def get_account_votes(self):
         return self.steem.rpc.get_account_votes(self.name)
