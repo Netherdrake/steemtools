@@ -65,10 +65,10 @@ class Account(object):
 
         return int(total_payout / len(blog))
 
-    def time_to_whale(self, verbose=False, sp=1e5, skip=1, max_posts=10, mean_of_recent=3):
+    def time_to_whale(self, verbose=False, whale_sp=1e5, skip=1, max_posts=10, mean_of_recent=3):
         blog = self.get_blog()[skip:max_posts + skip]
 
-        max_rshares = self.converter.sp_to_rshares(sp)
+        max_rshares = self.converter.sp_to_rshares(whale_sp)
         time_to_whale = []
 
         for post in blog:
