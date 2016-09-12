@@ -29,14 +29,18 @@ docker exec -it steem-wallet /usr/local/bin/cli_wallet
 
 
 ## Install Development branch of Piston (optional)
-`pip install git+git://github.com/xeroc/piston@master`
 
+Casual:
+`pip install steem-piston`
+
+Master:
 ```
 pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/piston@master
 pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/python-steemlib@master
 pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/python-graphenelib@master
 ```
 
+Develop:
 ```
 pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/piston@develop
 pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/python-steemlib@develop

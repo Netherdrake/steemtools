@@ -28,7 +28,7 @@ class Blockchain(object):
                         "op": op,
                     }
 
-    def get_blockchain_history(self, start_block, end_block=None, filter_by=None, **kwargs):
+    def replay(self, start_block=0, end_block=None, filter_by=None, **kwargs):
         """
         :param start_block: Block number of the first block to parse.
         :param end_block: Block number of the last block to parse.
