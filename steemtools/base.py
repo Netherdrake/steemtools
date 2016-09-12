@@ -7,11 +7,11 @@ import piston
 from dateutil import parser
 
 from steemtools.helpers import read_asset, parse_payout, time_diff
-from steemtools.node import steem_default
+from steemtools.node import default
 
 
 class Account(object):
-    def __init__(self, account_name, steem=steem_default()):
+    def __init__(self, account_name, steem=default()):
         self.steem = steem
 
         self.name = account_name
@@ -223,7 +223,7 @@ class Account(object):
 
 
 class Post(piston.steem.Post):
-    def __init__(self, post, steem=steem_default()):
+    def __init__(self, post, steem=default()):
         if isinstance(post, piston.steem.Post):
             post = post.identifier
         super(Post, self).__init__(steem, post)
@@ -292,7 +292,7 @@ class Post(piston.steem.Post):
 
 
 class Converter(object):
-    def __init__(self, steem=steem_default()):
+    def __init__(self, steem=default()):
         self.steem = steem
         self.CONTENT_CONSTANT = 2000000000000
         self._sbd_median_price = None

@@ -11,13 +11,14 @@ _apis = [
 ]
 
 
-def steem_default():
-    return Steem(node=_nodes[0], apis=_apis)
+def default():
+    """
+    This will try local node first, and automatically fallback to public node.
+    :return:
+    """
+    return Steem(node=_nodes, apis=_apis)
 
 
-def steem_light():
+def public():
     return Steem(node=_nodes[1])
 
-
-def steem_local():
-    return Steem(node=_nodes[0],apis=_apis)

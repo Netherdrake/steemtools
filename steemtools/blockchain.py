@@ -3,11 +3,11 @@ import time
 import dateutil
 from dateutil import parser
 
-from .node import steem_default
+from .node import default
 
 
 class Blockchain(object):
-    def __init__(self, steem=steem_default()):
+    def __init__(self, steem=default()):
         self.steem = steem
 
     @staticmethod
