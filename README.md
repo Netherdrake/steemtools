@@ -7,7 +7,7 @@ docker pull teego/steem-blockchain
 
 Initiate the blockchain image:
 ```
-docker create --name steem-blockchain teego/steem_blockchain /bin/true
+docker create --name steem-blockchain teego/steem-blockchain /bin/true
 ```
 
 Run our node:
