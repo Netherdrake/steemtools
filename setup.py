@@ -1,12 +1,17 @@
 from setuptools import setup, find_packages
 from codecs import open
 from os import path
+import sys
 
 here = path.abspath(path.dirname(__file__))
 
+assert sys.version_info[0] == 3, "steemtools requires Python > 3"
+
+VERSION = '1'
+
 setup(
     name='steemtools',
-    version='1',
+    version=VERSION,
     description='Python Utilities for parsing STEEM blockchain',
     long_description=open('README.md').read(),
     url='https://github.com/Netherdrake/steemtools',
