@@ -1,6 +1,6 @@
 from piston.steem import Steem
 
-_nodes = ["ws://127.0.0.1:8090", "wss://node.steem.ws"]
+_nodes = ["ws://127.0.0.1:8090", "wss://node.steem.ws", "wss://this.piston.rocks"]
 _apis = [
         "database_api",
         "login_api",
