@@ -5,7 +5,6 @@ import time
 import numpy as np
 import piston
 from dateutil import parser
-
 from steemtools.helpers import read_asset, parse_payout, time_diff
 from steemtools.node import default
 
