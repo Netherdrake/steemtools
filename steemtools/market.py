@@ -3,7 +3,11 @@ from steemtools.helpers import parse_payout
 from steemtools.node import default
 
 
-class Market(object):
+class Tickers(object):
+    pass
+
+
+class Market(Tickers):
     def __init__(self, steem=default()):
         self.steem = steem
 
