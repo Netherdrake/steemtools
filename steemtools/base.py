@@ -317,18 +317,28 @@ class Converter(object):
     def __init__(self, steem=default()):
         self.steem = steem
         self.CONTENT_CONSTANT = 2000000000000
+
+        # caches, lazy loading
+        self._cache_timeout = 5*60  # 5 minutes
+        self._cache_timer = time.time()
         self._sbd_median_price = None
         self._steem_per_mvests = None
-        # TODO implement caching invalidation mechanism for median price, and steem_per_mvests
+
+    def _has_cache_expired(self):
+        if time.time() - self._cache_timer > self._cache_timeout:
+            self._cache_timer = time.time()
+            return True
+        return False
 
     def sbd_median_price(self):
-        if self._sbd_median_price is None:
+        if (self._sbd_median_price is None) or self._has_cache_expired():
             price = read_asset(self.steem.rpc.get_feed_history()['current_median_history']['base'])['value']
             self._sbd_median_price = price
+
         return self._sbd_median_price
 
     def steem_per_mvests(self):
-        if self._steem_per_mvests is None:
+        if (self._steem_per_mvests is None) or self._has_cache_expired():
             info = self.steem.rpc.get_dynamic_global_properties()
             self._steem_per_mvests = (
                 float(info["total_vesting_fund_steem"].split(" ")[0]) /
