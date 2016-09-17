@@ -2,6 +2,7 @@ import datetime
 import math
 import time
 
+import dateutil
 import numpy as np
 import piston
 from dateutil import parser
@@ -241,6 +242,22 @@ class Account(object):
 
     def get_account_votes(self):
         return self.steem.rpc.get_account_votes(self.name)
+
+    @staticmethod
+    def filter_by_date(items, start_time, end_time=None):
+        start_time = dateutil.parser.parse(start_time + "UTC").timestamp()
+        if end_time:
+            end_time = dateutil.parser.parse(end_time + "UTC").timestamp()
+        else:
+            end_time = time.time()
+
+        filtered_items = []
+        for item in items:
+            timestamp = dateutil.parser.parse(item['time'] + "UTC").timestamp()
+            if end_time > timestamp > start_time:
+                filtered_items.append(item)
+
+        return filtered_items
 
 
 class Post(piston.steem.Post):

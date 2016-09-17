@@ -54,7 +54,7 @@ class Transactions(object):
             return tx
         return self.steem.broadcast(tx)
 
-    def witness_publish_feed(self, steem_usd_price, witness_name, wif, sim_mode=True):
+    def witness_feed_publish(self, steem_usd_price, witness_name, wif, sim_mode=True):
         op = Feed_publish(
             **{"publisher": witness_name,
                "exchange_rate": {
