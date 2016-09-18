@@ -2,7 +2,7 @@ from graphenebase.objects import GrapheneObject, isArgsThisClass
 from graphenebase.types import OrderedDict, String
 from steembase.account import PrivateKey
 from steembase.operations import Amount, Transfer_to_vesting
-from steemtools.node import default
+from steemtools.node import Node
 
 
 # this class was copied from
@@ -39,7 +39,7 @@ class Feed_publish(GrapheneObject):
 
 
 class Transactions(object):
-    def __init__(self, steem=default()):
+    def __init__(self, steem=Node().default()):
         self.steem = steem
 
     def transfer_to_vesting(self, to, amount, account_name, wif, sim_mode=True):

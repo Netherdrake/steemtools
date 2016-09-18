@@ -1,6 +1,6 @@
 import numpy as np
 from steemtools.helpers import parse_payout
-from steemtools.node import default
+from steemtools.node import Node
 
 
 class Tickers(object):
@@ -8,7 +8,7 @@ class Tickers(object):
 
 
 class Market(Tickers):
-    def __init__(self, steem=default()):
+    def __init__(self, steem=Node().default()):
         self.steem = steem
 
     def avg_witness_price(self, take=10):

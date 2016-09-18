@@ -1,8 +1,8 @@
 from steemtools.experimental import Transactions
 from steemtools.helpers import read_asset
-from steemtools.node import default
+from steemtools.node import Node
 
-steem = default()
+steem = Node().default()
 
 
 # get wif for our account
