@@ -7,7 +7,7 @@ from piston.steem import Steem
 class Node(object):
     def __init__(self):
         self._nodes = {
-            "local": self.find_local_nodes(),
+            "local": ["ws://127.0.0.1:8090"],
             "public": ["wss://node.steem.ws", "wss://this.piston.rocks"],
         }
 
@@ -24,7 +24,8 @@ class Node(object):
         """
         This will try local node first, and automatically fallback to public nodes.
         """
-        return Steem(node=self._nodes['local'].extend(self._nodes['public']), apis=self._apis)
+        nodes = self.find_local_nodes()+self._nodes['public']
+        return Steem(node=nodes, apis=self._apis)
 
     def public(self):
         return Steem(node=self._nodes['public'], apis=self._apis)
@@ -35,7 +36,7 @@ class Node(object):
     @staticmethod
     def find_local_nodes():
         local_nodes = []
-        for node in ["ws://127.0.0.1:8090", "wss://127.0.0.1:8090"]:
+        for node in ["ws://127.0.0.1:8090"]:
             if node[:3] == "wss":
                 sslopt_ca_certs = {'cert_reqs': ssl.CERT_NONE}
                 ws = websocket.WebSocket(sslopt=sslopt_ca_certs)
@@ -48,7 +49,7 @@ class Node(object):
             except:
                 ws.close()
 
-            return local_nodes
+        return local_nodes
 
 
 # legacy method

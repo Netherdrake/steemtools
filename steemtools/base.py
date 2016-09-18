@@ -9,9 +9,12 @@ from dateutil import parser
 from steemtools.helpers import read_asset, parse_payout, time_diff
 from steemtools.node import Node
 
+# only import node once for all classes
+default_node = Node().default()
+
 
 class Account(object):
-    def __init__(self, account_name, steem=Node().default()):
+    def __init__(self, account_name, steem=default_node):
         self.steem = steem
 
         self.name = account_name
@@ -261,7 +264,7 @@ class Account(object):
 
 
 class Post(piston.steem.Post):
-    def __init__(self, post, steem=Node().default()):
+    def __init__(self, post, steem=default_node):
         if isinstance(post, piston.steem.Post):
             post = post.identifier
         super(Post, self).__init__(steem, post)
@@ -330,7 +333,7 @@ class Post(piston.steem.Post):
 
 
 class Converter(object):
-    def __init__(self, steem=Node().default()):
+    def __init__(self, steem=default_node):
         self.steem = steem
         self.CONTENT_CONSTANT = 2000000000000
 
