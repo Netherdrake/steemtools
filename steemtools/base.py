@@ -97,21 +97,19 @@ class Account(object):
         return np.mean(time_to_whale[:mean_of_recent])
 
     def get_followers(self):
-        """
-        This method was (mostly) copy-pasted from:
-        https://github.com/aaroncox/steemdb/blob/master/docker/history/history.py#L48-L69
-        """
-        my_followers = set()
-        followers_results = self.steem.rpc.get_followers(self.name, "", "blog", 100, api="follow")
-        while len(followers_results) > 1:
-            last_account = ""
-            for follower in followers_results:
-                last_account = follower['follower']
-                if 'blog' in follower['what'] or 'posts' in follower['what']:
-                    my_followers.add(follower['follower'])
-            followers_results = self.steem.rpc.get_followers(self.name, last_account, "blog", 100, api="follow")
+        return [x['follower'] for x in self._get_followers(direction="follower")]
 
-        return list(my_followers)
+    def get_following(self):
+        return [x['following'] for x in self._get_followers(direction="following")]
+
+    def _get_followers(self, direction="follower", last_user=""):
+        if direction == "follower":
+            followers = self.steem.rpc.get_followers(self.name, last_user, "blog", 100, api="follow")
+        elif direction == "following":
+            followers = self.steem.rpc.get_following(self.name, last_user, "blog", 100, api="follow")
+        if len(followers) == 100:
+            followers += self._get_followers(direction=direction, last_user=followers[-1][direction])[1:]
+        return followers
 
     def check_if_already_voted(self, post):
         for v in self.history2(filter_by="vote"):
