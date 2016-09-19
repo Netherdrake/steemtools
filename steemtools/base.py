@@ -254,7 +254,11 @@ class Account(object):
 
         filtered_items = []
         for item in items:
-            timestamp = dateutil.parser.parse(item['time'] + "UTC").timestamp()
+            if 'time' in item:
+                item_time = item['time']
+            elif 'timestamp' in item:
+                item_time = item['timestamp']
+            timestamp = dateutil.parser.parse(item_time + "UTC").timestamp()
             if end_time > timestamp > start_time:
                 filtered_items.append(item)
 
