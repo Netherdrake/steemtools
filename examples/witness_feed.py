@@ -33,9 +33,7 @@ if __name__ == '__main__':
 
         current_price = markets.steem_usd_implied()
         if settings['sbd_usd_peg']:
-            print(markets.sbd_usd_implied())
             current_price *= markets.sbd_usd_implied()
-            print(current_price)
         print("Implied STEEM/USD price is: %.3f" % current_price)
 
         # if price diverged for more than our defined %, update the feed
