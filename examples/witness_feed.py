@@ -7,6 +7,7 @@ from steemtools.node import Node
 settings = {
     "sleep_time_seconds": 60,
     "minimum_spread_pct": 1.0,
+    "sbd_usd_peg": True,
 }
 witness = "furion"
 wif = "<PRIVATE ACTIVE KEY HERE>"
@@ -31,11 +32,15 @@ if __name__ == '__main__':
         print("Published STEEM/USD price is: " + format(last_price, ".3f"))
 
         current_price = markets.steem_usd_implied()
-        print("Current STEEM/USD price is: %.3f" % current_price)
+        if settings['sbd_usd_peg']:
+            print(markets.sbd_usd_implied())
+            current_price *= markets.sbd_usd_implied()
+            print(current_price)
+        print("Implied STEEM/USD price is: %.3f" % current_price)
 
         # if price diverged for more than our defined %, update the feed
         spread = abs(markets.calc_spread(last_price, current_price))
-        print("Current Spread Between Prices: %.3f%%" % spread)
+        print("Spread Between Prices: %.3f%%" % spread)
         if spread > settings['minimum_spread_pct']:
             tx = Transactions().witness_feed_publish(current_price, witness, wif, sim_mode=False)
             # print(tx)
