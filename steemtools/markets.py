@@ -98,7 +98,7 @@ class Markets(Tickers):
         self._sbd_btc = None
 
     def _has_cache_expired(self):
-        if 0 < self._cache_timeout < time.time() - self._cache_timer:
+        if self._cache_timer + self._cache_timeout < time.time():
             self._cache_timer = time.time()
             return True
         return False
