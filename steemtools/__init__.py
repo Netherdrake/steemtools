@@ -1,7 +1,7 @@
 __all__ = [
     'node',
     'base',
-    'market',
+    'markets',
     'blockchain',
     'helpers',
 ]
