@@ -1,11 +1,16 @@
 ## 1.1 (major):
 
 ### Features
-NEW `market` module, providing price feeds
+- NEW `markets` module, providing price feeds
+- Improved `node` module, with automatic local node detection and fallback
 
 ### Improvements/Fixes
-Added More nodes to default() steem connection for redundancy
-Added Cache Invalidation to the `Converter`
+- `Accounts` gets the ability to filter history by date, and a `get_followings()` method
+- Added More nodes to default() steem connection for redundancy
+- Added Cache Invalidation to the `Converter`
+
+### Other
+Added a sample `witness_feed` script.
 
 
 ## 1.0.1 (minor):
