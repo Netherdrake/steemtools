@@ -1,3 +1,33 @@
+## Documentation
+[> Blockchain parsing, Posts and Accounts](https://steemit.com/steemtools/@furion/ann-steemtools-a-high-level-python-library-for-steem)  
+[> Witness Fees and Markets](https://steemit.com/steem/@furion/witness-feed-publishing-with-automatic-sbd-usd-peg)
+
+## Examples
+Please see [examples](https://github.com/Netherdrake/steemtools/tree/master/examples).
+
+## Known Issues
+### Currently, a develop version of Piston is required
+You can install it by running this after installing `steemtools`:
+```
+pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/piston@develop
+pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/python-steemlib@develop
+pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/python-graphenelib@develop
+```
+
+### Websocket issue
+If you run into this error:
+```
+ImportError: cannot import name 'create_connection'`
+```
+
+You need to reinstall websocket:
+```
+pip uninstall websocket
+pip uninstall websocket-client
+pip install websocket
+pip install websocket-client
+```
+
 ## Install a local node (optional)
 Pull the docker images:
 ```
@@ -25,24 +55,4 @@ You can also pass custom parameters by appending this to the previous command:
 Get into CLI Wallet (optional):
 ```
 docker exec -it steem-wallet /usr/local/bin/cli_wallet
-```
-
-
-## Install Development branch of Piston (optional)
-
-Casual:
-`pip install steem-piston`
-
-Master:
-```
-pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/piston@master
-pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/python-steemlib@master
-pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/python-graphenelib@master
-```
-
-Develop:
-```
-pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/piston@develop
-pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/python-steemlib@develop
-pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/python-graphenelib@develop
 ```
