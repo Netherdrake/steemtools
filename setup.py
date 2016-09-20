@@ -7,7 +7,7 @@ here = path.abspath(path.dirname(__file__))
 
 assert sys.version_info[0] == 3, "steemtools requires Python > 3"
 
-VERSION = '1.0.15'
+VERSION = '1.0.16'
 
 setup(
     name='steemtools',
@@ -38,14 +38,14 @@ setup(
     install_requires=[
         'steem-piston', 'tqdm',
         'python-dateutil',
-        'numpy', 'websocket', 'websocket-client',
+        'numpy', 'requests',
     ],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
-        'dev': ['check-manifest', 'pymongo', 'requests', 'matplotlib'],
+        'dev': ['check-manifest', 'pymongo', 'matplotlib', 'websocket', 'websocket-client'],
         'test': ['coverage'],
     },
 
