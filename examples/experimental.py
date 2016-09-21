@@ -1,5 +1,6 @@
 from pprint import pprint
 
+
 from steemtools.experimental import Transactions
 from steemtools.helpers import read_asset
 from steemtools.node import Node
@@ -41,6 +42,4 @@ def update_witness():
     }
     tx = t.witness_update("furion", "<PUBLIC_POSTING_KEY>", "https://steemdb.com/@furion/witness", props, "<PRIVATE_ACTIVE_KEY>", sim_mode=False)
     pprint(tx)
-
-
 
