@@ -3,6 +3,8 @@ import ssl
 import websocket
 from piston.steem import Steem
 
+custom_node = None
+
 
 class Node(object):
     def __init__(self):
@@ -24,6 +26,8 @@ class Node(object):
         """
         This will try local node first, and automatically fallback to public nodes.
         """
+        if custom_node:
+            return custom_node
         nodes = self.find_local_nodes()+self._nodes['public']
         return Steem(node=nodes, apis=self._apis)
 

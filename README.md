@@ -5,7 +5,7 @@ pip install -U steemtools
 
 ## Documentation
 [> Blockchain parsing, Posts and Accounts](https://steemit.com/steemtools/@furion/ann-steemtools-a-high-level-python-library-for-steem)  
-[> Witness Fees and Markets](https://steemit.com/steem/@furion/witness-feed-publishing-with-automatic-sbd-usd-peg)
+[> Witness Fees and Markets](https://steemit.com/steem/@furion/witness-feed-publishing-with-automatic-sbd-usd-peg)  
 [> Updating your Witness](https://steemit.com/witness-category/@furion/updating-you-witness-with-python)
 
 ## Examples
