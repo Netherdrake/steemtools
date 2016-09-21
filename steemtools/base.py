@@ -244,6 +244,13 @@ class Account(object):
     def get_account_votes(self):
         return self.steem.rpc.get_account_votes(self.name)
 
+    def get_withdraw_routes(self):
+        return self.steem.rpc.get_withdraw_routes(self.name, 'all')
+
+    def get_conversion_requests(self):
+        return self.steem.rpc.get_conversion_requests(self.name)
+
+
     @staticmethod
     def filter_by_date(items, start_time, end_time=None):
         start_time = dateutil.parser.parse(start_time + "UTC").timestamp()
