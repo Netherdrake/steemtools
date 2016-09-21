@@ -34,14 +34,14 @@ def power_up():
 
 # update a witness with new key. If posting key is "", witness doesn't mint blocks.
 def update_witness():
-t = Transactions()
-props = {
-    "account_creation_fee": "15.000 STEEM",
-    "maximum_block_size": 65536,
-    "sbd_interest_rate": 500,
-}
-tx = t.witness_update("furion", "<PUBLIC_POSTING_KEY>", "https://steemdb.com/@furion/witness", props, "<PRIVATE_ACTIVE_KEY>", sim_mode=False)
-pprint(tx)
+    t = Transactions()
+    props = {
+        "account_creation_fee": "15.000 STEEM",
+        "maximum_block_size": 65536,
+        "sbd_interest_rate": 500,
+    }
+    tx = t.witness_update("furion", "<PUBLIC_POSTING_KEY>", "https://steemdb.com/@furion/witness", props, "<PRIVATE_ACTIVE_KEY>", sim_mode=False)
+    pprint(tx)
 
 
 update_witness()
