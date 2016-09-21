@@ -201,6 +201,7 @@ class Transactions(object):
         tx = self.steem.constructTx(op, wif)
         if sim_mode:
             return tx
+        raise Exception("This method doesn't work in real_mode yet. Sorry.")
         return self.steem.broadcast(tx)
 
     def transfer_from_savings_cancel(self, transfer_from, request_id, wif, sim_mode=True):
