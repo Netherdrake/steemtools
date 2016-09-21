@@ -1,6 +1,6 @@
 from graphenebase.objects import GrapheneObject, isArgsThisClass
-from graphenebase.types import OrderedDict, String
-from steembase.account import PrivateKey
+from graphenebase.types import OrderedDict, String, Uint32, Uint16
+from steembase.account import PrivateKey, PublicKey
 from steembase.operations import Amount, Transfer_to_vesting
 from steemtools.node import Node
 
@@ -38,6 +38,37 @@ class Feed_publish(GrapheneObject):
             ]))
 
 
+class Witness_props(GrapheneObject):
+    def __init__(self, *args, **kwargs):
+        if isArgsThisClass(self, args):
+            self.data = args[0].data
+        else:
+            if len(args) == 1 and len(kwargs) == 0:
+                kwargs = args[0]
+
+            super().__init__(OrderedDict([
+                ('account_creation_fee', Amount(kwargs["account_creation_fee"])),
+                ('maximum_block_size', Uint32(kwargs["maximum_block_size"])),
+                ('sbd_interest_rate', Uint16(kwargs["sbd_interest_rate"])),
+            ]))
+
+
+class Witness_update(GrapheneObject):
+    def __init__(self, *args, **kwargs):
+        if isArgsThisClass(self, args):
+            self.data = args[0].data
+        else:
+            if len(args) == 1 and len(kwargs) == 0:
+                kwargs = args[0]
+            super().__init__(OrderedDict([
+                ('owner', String(kwargs["owner"])),
+                ('url', String(kwargs["url"])),
+                ('block_signing_key', PublicKey(kwargs["block_signing_key"])),
+                ('props', Witness_props(kwargs["props"])),
+                ('fee', Amount(kwargs["fee"])),
+            ]))
+
+
 class Transactions(object):
     def __init__(self, steem=Node().default()):
         self.steem = steem
@@ -61,6 +92,21 @@ class Transactions(object):
                    "base": "%s SBD" % steem_usd_price,
                    "quote": "1.000 STEEM"
                }}
+        )
+        tx = self.steem.constructTx(op, wif)
+        if sim_mode:
+            return tx
+        return self.steem.broadcast(tx)
+
+    def witness_update(self, witness_name, signing_key, url, props, wif, sim_mode=True):
+        op = Witness_update(
+            **{
+                "owner": witness_name,
+                "url": url,
+                "block_signing_key": signing_key,
+                "props": props,
+                "fee": "0.000 STEEM",
+            }
         )
         tx = self.steem.constructTx(op, wif)
         if sim_mode:

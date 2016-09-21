@@ -45,7 +45,7 @@ setup(
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
-        'dev': ['check-manifest', 'pymongo', 'matplotlib', 'websocket', 'websocket-client'],
+        'dev': ['check-manifest', 'pymongo', 'matplotlib', 'pandas'],
         'test': ['coverage'],
     },
 
