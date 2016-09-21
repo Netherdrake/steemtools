@@ -75,10 +75,11 @@ class Transactions(object):
 
     def transfer_to_vesting(self, to, amount, account_name, wif, sim_mode=True):
         op = Transfer_to_vesting(
-            **{"from": account_name,
-               "to": to,
-               "amount": "%s STEEM" % amount,
-               }
+            **{
+                "from": account_name,
+                "to": to,
+                "amount": "%s STEEM" % amount,
+            }
         )
         tx = self.steem.constructTx(op, wif)
         if sim_mode:
@@ -87,11 +88,13 @@ class Transactions(object):
 
     def witness_feed_publish(self, steem_usd_price, witness_name, wif, sim_mode=True):
         op = Feed_publish(
-            **{"publisher": witness_name,
-               "exchange_rate": {
-                   "base": "%s SBD" % steem_usd_price,
-                   "quote": "1.000 STEEM"
-               }}
+            **{
+                "publisher": witness_name,
+                "exchange_rate": {
+                    "base": "%s SBD" % steem_usd_price,
+                    "quote": "1.000 STEEM"
+                }
+            }
         )
         tx = self.steem.constructTx(op, wif)
         if sim_mode:
