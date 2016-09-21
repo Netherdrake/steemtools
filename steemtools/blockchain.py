@@ -7,7 +7,9 @@ from .node import Node
 
 
 class Blockchain(object):
-    def __init__(self, steem=Node().default()):
+    def __init__(self, steem=None):
+        if not steem:
+            steem = Node().default()
         self.steem = steem
 
     @staticmethod

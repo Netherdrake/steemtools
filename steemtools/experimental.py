@@ -156,7 +156,9 @@ class Cancel_transfer_from_savings(GrapheneObject):
 
 
 class Transactions(object):
-    def __init__(self, steem=Node().default()):
+    def __init__(self, steem=None):
+        if not steem:
+            steem = Node().default()
         self.steem = steem
 
     def transfer_to_vesting(self, to, amount, account_name, wif, sim_mode=True):

@@ -88,7 +88,9 @@ class Tickers(object):
 
 
 class Markets(Tickers):
-    def __init__(self, cache_timeout=60, steem=Node().default()):
+    def __init__(self, cache_timeout=60, steem=None):
+        if not steem:
+            steem = Node().default()
         self.steem = steem
 
         self._cache_timeout = cache_timeout
