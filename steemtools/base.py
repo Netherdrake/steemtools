@@ -283,6 +283,9 @@ class Post(piston.steem.Post):
         if len(self['title']) == 0:
             return True
 
+        if self['depth'] > 0:
+            return True
+
         if len(self['parent_author']) > 0:
             return True
 
