@@ -280,9 +280,6 @@ class Post(piston.steem.Post):
         super(Post, self).__init__(steem, post)
 
     def is_comment(self):
-        if self['permlink'][:3] == "re-":
-            return True
-
         if len(self['title']) == 0:
             return True
 
