@@ -343,14 +343,14 @@ class Post(piston.steem.Post):
 
 
 class Converter(object):
-    def __init__(self, steem=None):
+    def __init__(self, cache_timeout=5*60, steem=None):
         if not steem:
             steem = Node().default()
         self.steem = steem
         self.CONTENT_CONSTANT = 2000000000000
 
         # caches, lazy loading
-        self._cache_timeout = 5*60  # 5 minutes
+        self._cache_timeout = cache_timeout  # 5 minutes
         self._cache_timer = time.time()
         self._sbd_median_price = None
         self._steem_per_mvests = None
