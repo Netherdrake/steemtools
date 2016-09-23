@@ -19,7 +19,7 @@ class Account(object):
         self.name = account_name
         self.account = self.steem.rpc.get_account(account_name)
 
-        self.converter = Converter(self.steem)
+        self.converter = Converter(steem=self.steem)
 
         # caches
         self._blog = None
