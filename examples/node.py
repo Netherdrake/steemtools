@@ -2,6 +2,24 @@ import stopwatch
 from steemtools.node import Node
 from steemtools.base import Account
 
+# # default node overloading
+# from steemtools.node import Node
+#
+# _apis = [
+#     "database_api",
+#     "login_api",
+#     "network_broadcast_api",
+#     "follow_api",
+#     "market_history_api",
+#     "tag_api",
+# ]
+# node.custom_node = Steem(
+#      node=os.getenv('STEEM_NODE', "wss://node.steem.ws"),
+#      apis=_apis,
+#      expires=600,
+# )
+
+
 
 def benchmark_find_local_nodes_impact():
 

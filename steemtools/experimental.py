@@ -97,6 +97,8 @@ class Witness_update(GrapheneObject):
         else:
             if len(args) == 1 and len(kwargs) == 0:
                 kwargs = args[0]
+            if kwargs["block_signing_key"] == "":
+                kwargs["block_signing_key"] = "STM1111111111111111111111111111111114T1Anm"
             super().__init__(OrderedDict([
                 ('owner', String(kwargs["owner"])),
                 ('url', String(kwargs["url"])),
