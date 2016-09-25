@@ -1,6 +1,7 @@
 import re
 import time
 
+import dateutil
 from dateutil import parser
 
 
@@ -31,3 +32,7 @@ def time_elapsed(post):
     created_at = parser.parse(post['created'] + "UTC").timestamp()
     now_adjusted = time.time()
     return now_adjusted - created_at
+
+
+def parse_time(block_time):
+    return dateutil.parser.parse(block_time + "UTC")
