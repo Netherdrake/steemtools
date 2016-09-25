@@ -1,3 +1,4 @@
+import datetime
 import re
 import time
 
@@ -35,4 +36,4 @@ def time_elapsed(post):
 
 
 def parse_time(block_time):
-    return dateutil.parser.parse(block_time + "UTC")
+    return dateutil.parser.parse(block_time + "UTC").astimezone(datetime.timezone.utc)
