@@ -11,6 +11,12 @@ pip install -U steemtools
 ## Examples
 Please see [examples](https://github.com/Netherdrake/steemtools/tree/master/examples).
 
+## 3rd party
+[> Automatic failover for witnesses by @jesta](https://steemit.com/witness-category/@jesta/steemtools-automatic-failover-for-witness-nodes)
+
+
+------------
+
 ## Known Issues
 ### Currently, a develop version of Piston is required
 You can install it by running this after installing `steemtools`:
@@ -34,7 +40,11 @@ pip install websocket
 pip install websocket-client
 ```
 
+------------
+
 ## Install a local node (optional)
+>Having a local node is highly recommended for blockchain parsing, or applications that need low latency/high reliability.
+
 Pull the docker images:
 ```
 docker pull teego/steem-wallet
