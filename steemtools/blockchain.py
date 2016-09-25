@@ -13,7 +13,7 @@ class Blockchain(object):
         self.steem = steem
 
     @staticmethod
-    def parse_block(block, block_id, verbose=False):
+    def parse_block(block, block_id, verbose=False, **kwargs):
         if "transactions" in block:
             timestamp = block['timestamp']
             if verbose:
@@ -30,6 +30,9 @@ class Blockchain(object):
                         "op": op,
                     }
 
+    def stream(self, **kwargs):
+        return self.replay(start_block=self.get_current_block(), **kwargs)
+
     def replay(self, start_block=1, end_block=None, filter_by=None, **kwargs):
         """
         :param start_block: Block number of the first block to parse.
@@ -42,11 +45,14 @@ class Blockchain(object):
         config = self.steem.rpc.get_config()
         block_interval = config["STEEMIT_BLOCK_INTERVAL"]
 
+        # last confirmed vs head
+        last_block_mode = 'head_block_number' if 'head' in kwargs else 'last_irreversible_block_num'
+
         current_block = start_block
 
         while True:
             props = self.steem.rpc.get_dynamic_global_properties()
-            last_confirmed_block = props['last_irreversible_block_num']
+            last_confirmed_block = props[last_block_mode]
 
             while current_block < last_confirmed_block:
 
