@@ -22,19 +22,19 @@ class Node(object):
             "tag_api",
         ]
 
-    def default(self):
+    def default(self, **kwargs):
         """
         This will try local node first, and automatically fallback to public nodes.
         """
         if custom_node:
             return custom_node
         nodes = self.find_local_nodes()+self._nodes['public']
-        return Steem(node=nodes, apis=self._apis)
+        return Steem(node=nodes, apis=self._apis, **kwargs)
 
-    def public(self):
-        return Steem(node=self._nodes['public'], apis=self._apis)
+    def public(self, **kwargs):
+        return Steem(node=self._nodes['public'], apis=self._apis, **kwargs)
 
-    def prioritize(self, priority_node):
+    def _prioritize(self, priority_node):
         return [priority_node].extend([x for x in self._nodes if x != priority_node])
 
     @staticmethod
