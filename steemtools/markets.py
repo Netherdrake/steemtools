@@ -6,40 +6,45 @@ import requests
 import time
 from steemtools.helpers import parse_payout
 from steemtools.node import Node
+import grequests
 
 
 class Tickers(object):
     @staticmethod
     def btc_usd_ticker(verbose=False):
         prices = {}
-        try:
-            r = requests.get("https://api.bitfinex.com/v1/pubticker/BTCUSD", timeout=2).json()
-            prices['bitfinex'] = {'price': float(r['last_price']), 'volume': float(r['volume'])}
-        except:
-            pass
-        try:
-            r = requests.get("https://api.exchange.coinbase.com/products/BTC-USD/ticker", timeout=2).json()
-            prices['coinbase'] = {'price': float(r['price']), 'volume': float(r['volume'])}
-        except:
-            pass
-        try:
-            r = requests.get("https://www.okcoin.com/api/v1/ticker.do?symbol=btc_usd", timeout=2).json()["ticker"]
-            prices['okcoin'] = {'price': float(r['last']), 'volume': float(r['vol'])}
-        except:
-            pass
-        try:
-            r = requests.get("https://www.bitstamp.net/api/v2/ticker/btcusd/", timeout=2).json()
-            prices['bitstamp'] = {'price': float(r['last']), 'volume': float(r['volume'])}
-        except:
-            pass
-        try:
-            r = requests.get("https://btc-e.com/api/2/btc_usd/ticker", timeout=2).json()['ticker']
-            prices['btce'] = {'price': float(r['avg']), 'volume': float(r['vol_cur'])}
-        except:
-            pass
+        urls = [
+            "https://api.bitfinex.com/v1/pubticker/BTCUSD",
+            "https://api.exchange.coinbase.com/products/BTC-USD/ticker",
+            "https://www.okcoin.com/api/v1/ticker.do?symbol=btc_usd",
+            "https://www.bitstamp.net/api/v2/ticker/btcusd/",
+            "https://btc-e.com/api/2/btc_usd/ticker",
+        ]
+        rs = (grequests.get(u, timeout=2) for u in urls)
+        responses = list(grequests.map(rs, exception_handler=lambda x, y: ""))
+
+        for r in [x for x in responses if hasattr(x, "status_code") and x.status_code == 200]:
+            if "bitfinex" in r.url:
+                data = r.json()
+                prices['bitfinex'] = {'price': float(data['last_price']), 'volume': float(data['volume'])}
+            elif "coinbase" in r.url:
+                data = r.json()
+                prices['coinbase'] = {'price': float(data['price']), 'volume': float(data['volume'])}
+            elif "okcoin" in r.url:
+                data = r.json()["ticker"]
+                prices['okcoin'] = {'price': float(data['last']), 'volume': float(data['vol'])}
+            elif "bitstamp" in r.url:
+                data = r.json()
+                prices['bitstamp'] = {'price': float(data['last']), 'volume': float(data['volume'])}
+            elif "btce"in r.url:
+                data = r.json()["ticker"]
+                prices['btce'] = {'price': float(data['avg']), 'volume': float(data['vol_cur'])}
 
         if verbose:
             pprint(prices)
+
+        if len(prices) == 0:
+            raise Exception("Obtaining BTC/USD prices has failed from all sources.")
 
         # vwap
         return np.average([x['price'] for x in prices.values()], weights=[x['volume'] for x in prices.values()])
