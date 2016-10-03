@@ -52,38 +52,52 @@ class Tickers(object):
     @staticmethod
     def steem_btc_ticker():
         prices = {}
-        try:
-            r = requests.get("https://poloniex.com/public?command=returnTicker", timeout=2).json()["BTC_STEEM"]
-            prices['poloniex'] = {'price': float(r['last']), 'volume': float(r['baseVolume'])}
-        except:
-            pass
-        try:
-            r = requests.get("https://bittrex.com/api/v1.1/public/getticker?market=BTC-STEEM", timeout=2).json()["result"]
-            price = (r['Bid'] + r['Ask']) / 2
-            prices['bittrex'] = {'price': price, 'volume': 0}
-        except:
-            pass
+        urls = [
+            "https://poloniex.com/public?command=returnTicker",
+            "https://bittrex.com/api/v1.1/public/getticker?market=BTC-STEEM",
+        ]
+        rs = (grequests.get(u, timeout=2) for u in urls)
+        responses = list(grequests.map(rs, exception_handler=lambda x, y: ""))
+
+        for r in [x for x in responses if hasattr(x, "status_code") and x.status_code == 200]:
+            if "poloniex" in r.url:
+                data = r.json()["BTC_STEEM"]
+                prices['poloniex'] = {'price': float(data['last']), 'volume': float(data['baseVolume'])}
+            elif "bittrex" in r.url:
+                data = r.json()["result"]
+                price = (data['Bid'] + data['Ask']) / 2
+                prices['bittrex'] = {'price': price, 'volume': 0}
+
+        if len(prices) == 0:
+            raise Exception("Obtaining STEEM/BTC prices has failed from all sources.")
 
         return np.mean([x['price'] for x in prices.values()])
 
     @staticmethod
     def sbd_btc_ticker(verbose=False):
         prices = {}
-        try:
-            r = requests.get("https://poloniex.com/public?command=returnTicker", timeout=2).json()["BTC_SBD"]
-            if verbose:
-                print("Spread on Poloniex is %.2f%%" % Tickers.calc_spread(r['highestBid'], r['lowestAsk']))
-            prices['poloniex'] = {'price': float(r['last']), 'volume': float(r['baseVolume'])}
-        except:
-            pass
-        try:
-            r = requests.get("https://bittrex.com/api/v1.1/public/getticker?market=BTC-SBD", timeout=2).json()["result"]
-            if verbose:
-                print("Spread on Bittrex is %.2f%%" % Tickers.calc_spread(r['Bid'], r['Ask']))
-            price = (r['Bid'] + r['Ask']) / 2
-            prices['bittrex'] = {'price': price, 'volume': 0}
-        except:
-            pass
+        urls = [
+            "https://poloniex.com/public?command=returnTicker",
+            "https://bittrex.com/api/v1.1/public/getticker?market=BTC-SBD",
+        ]
+        rs = (grequests.get(u, timeout=2) for u in urls)
+        responses = list(grequests.map(rs, exception_handler=lambda x, y: ""))
+
+        for r in [x for x in responses if hasattr(x, "status_code") and x.status_code == 200]:
+            if "poloniex" in r.url:
+                data = r.json()["BTC_SBD"]
+                if verbose:
+                    print("Spread on Poloniex is %.2f%%" % Tickefs.calc_spread(data['highestBid'], data['lowestAsk']))
+                prices['poloniex'] = {'price': float(data['last']), 'volume': float(data['baseVolume'])}
+            elif "bittrex" in r.url:
+                data = r.json()["result"]
+                if verbose:
+                    print("Spread on Bittfex is %.2f%%" % Tickers.calc_spread(data['Bid'] + data['Ask']))
+                price = (data['Bid'] + data['Ask']) / 2
+                prices['bittrex'] = {'price': price, 'volume': 0}
+
+        if len(prices) == 0:
+            raise Exception("Obtaining SBD/BTC prices has failed from all sources.")
 
         return np.mean([x['price'] for x in prices.values()])
 
