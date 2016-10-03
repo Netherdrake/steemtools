@@ -121,3 +121,4 @@ class Blockchain(object):
             usernames += self.get_all_usernames(usernames[-1])[1:]
 
         return usernames
+
