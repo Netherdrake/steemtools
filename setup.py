@@ -7,7 +7,7 @@ here = path.abspath(path.dirname(__file__))
 
 assert sys.version_info[0] == 3, "steemtools requires Python > 3"
 
-VERSION = '1.1.0'
+VERSION = '1.1.1'
 
 setup(
     name='steemtools',
@@ -38,7 +38,7 @@ setup(
     install_requires=[
         'steem-piston', 'tqdm',
         'python-dateutil',
-        'numpy', 'requests',
+        'numpy', 'requests', 'grequests',
     ],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,

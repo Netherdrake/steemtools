@@ -1,12 +1,11 @@
+import time
 from decimal import Decimal
 from pprint import pprint
 
+import grequests
 import numpy as np
-import requests
-import time
 from steemtools.helpers import parse_payout
 from steemtools.node import Node
-import grequests
 
 
 class Tickers(object):
@@ -36,7 +35,7 @@ class Tickers(object):
             elif "bitstamp" in r.url:
                 data = r.json()
                 prices['bitstamp'] = {'price': float(data['last']), 'volume': float(data['volume'])}
-            elif "btce"in r.url:
+            elif "btce" in r.url:
                 data = r.json()["ticker"]
                 prices['btce'] = {'price': float(data['avg']), 'volume': float(data['vol_cur'])}
 
