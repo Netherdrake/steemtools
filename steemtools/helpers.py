@@ -29,8 +29,8 @@ def is_comment(item):
     return False
 
 
-def time_elapsed(post):
-    created_at = parser.parse(post['created'] + "UTC").timestamp()
+def time_elapsed(time1):
+    created_at = parser.parse(time1 + "UTC").timestamp()
     now_adjusted = time.time()
     return now_adjusted - created_at
 
