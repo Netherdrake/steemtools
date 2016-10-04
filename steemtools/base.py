@@ -17,12 +17,17 @@ class Account(object):
         self.steem = steem
 
         self.name = account_name
-        self.account = self.steem.rpc.get_account(account_name)
 
         self.converter = Converter(steem=self.steem)
 
         # caches
         self._blog = None
+        self._props = None
+
+    def get_props(self):
+        if self._props is None:
+            self._props = self.steem.rpc.get_account(self.name)
+        return self._props
 
     def get_blog(self):
         if self._blog is None:
@@ -30,11 +35,11 @@ class Account(object):
         return self._blog
 
     def get_sp(self):
-        vests = int(parse_payout(self.account['vesting_shares']))
+        vests = int(parse_payout(self.get_props()['vesting_shares']))
         return self.converter.vests_to_sp(vests)
 
     def reputation(self):
-        rep = int(self.account['reputation'])
+        rep = int(self.get_props()['reputation'])
         if rep < 0:
             return -1
         if rep == 0:
@@ -44,7 +49,7 @@ class Account(object):
         return float("%.2f" % score)
 
     def voting_power(self):
-        return self.account['voting_power'] / 100
+        return self.get_props()['voting_power'] / 100
 
     def number_of_winning_posts(self, skip=1, payout_requirement=300, max_posts=10):
         winning_posts = 0
