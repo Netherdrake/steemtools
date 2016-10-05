@@ -38,7 +38,7 @@ setup(
     install_requires=[
         'steem-piston', 'tqdm',
         'python-dateutil',
-        'numpy', 'requests', 'grequests',
+        'numpy', 'requests', 'grequests', 'werkzeug', 'funcy',
     ],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
