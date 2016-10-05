@@ -6,8 +6,11 @@ import dateutil
 import numpy as np
 import piston
 from dateutil import parser
-from steemtools.helpers import read_asset, parse_payout, time_diff
+from steemtools.helpers import read_asset, parse_payout, time_diff, simple_cache
 from steemtools.node import Node
+
+from werkzeug.contrib.cache import SimpleCache
+base_cache = SimpleCache() # is this threadsafe?
 
 
 class Account(object):
@@ -348,39 +351,23 @@ class Post(piston.steem.Post):
 
 
 class Converter(object):
-    def __init__(self, cache_timeout=5*60, steem=None):
+    def __init__(self, steem=None):
         if not steem:
             steem = Node().default()
         self.steem = steem
         self.CONTENT_CONSTANT = 2000000000000
 
-        # caches, lazy loading
-        self._cache_timeout = cache_timeout  # 5 minutes
-        self._cache_timer = time.time()
-        self._sbd_median_price = None
-        self._steem_per_mvests = None
-
-    def _has_cache_expired(self):
-        if time.time() - self._cache_timer > self._cache_timeout:
-            self._cache_timer = time.time()
-            return True
-        return False
-
+    @simple_cache(base_cache, timeout=5*60)
     def sbd_median_price(self):
-        if (self._sbd_median_price is None) or self._has_cache_expired():
-            price = read_asset(self.steem.rpc.get_feed_history()['current_median_history']['base'])['value']
-            self._sbd_median_price = price
+        return read_asset(self.steem.rpc.get_feed_history()['current_median_history']['base'])['value']
 
-        return self._sbd_median_price
-
+    @simple_cache(base_cache, timeout=5*60)
     def steem_per_mvests(self):
-        if (self._steem_per_mvests is None) or self._has_cache_expired():
-            info = self.steem.rpc.get_dynamic_global_properties()
-            self._steem_per_mvests = (
-                float(info["total_vesting_fund_steem"].split(" ")[0]) /
-                (float(info["total_vesting_shares"].split(" ")[0]) / 1e6)
-            )
-        return self._steem_per_mvests
+        info = self.steem.rpc.get_dynamic_global_properties()
+        return (
+            parse_payout(info["total_vesting_fund_steem"]) /
+            (parse_payout(info["total_vesting_shares"]) / 1e6)
+        )
 
     def vests_to_sp(self, vests):
         return vests * self.steem_per_mvests() / 1e6
