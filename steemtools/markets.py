@@ -22,7 +22,7 @@ class Tickers(object):
         rs = (grequests.get(u, timeout=2) for u in urls)
         responses = list(grequests.map(rs, exception_handler=lambda x, y: ""))
 
-        for r in [x for x in responses if hasattr(x, "status_code") and x.status_code == 200]:
+        for r in [x for x in responses if hasattr(x, "status_code") and x.status_code == 200 and x.json()]:
             if "bitfinex" in r.url:
                 data = r.json()
                 prices['bitfinex'] = {'price': float(data['last_price']), 'volume': float(data['volume'])}
@@ -58,7 +58,7 @@ class Tickers(object):
         rs = (grequests.get(u, timeout=2) for u in urls)
         responses = list(grequests.map(rs, exception_handler=lambda x, y: ""))
 
-        for r in [x for x in responses if hasattr(x, "status_code") and x.status_code == 200]:
+        for r in [x for x in responses if hasattr(x, "status_code") and x.status_code == 200 and x.json()]:
             if "poloniex" in r.url:
                 data = r.json()["BTC_STEEM"]
                 prices['poloniex'] = {'price': float(data['last']), 'volume': float(data['baseVolume'])}
@@ -82,11 +82,11 @@ class Tickers(object):
         rs = (grequests.get(u, timeout=2) for u in urls)
         responses = list(grequests.map(rs, exception_handler=lambda x, y: ""))
 
-        for r in [x for x in responses if hasattr(x, "status_code") and x.status_code == 200]:
+        for r in [x for x in responses if hasattr(x, "status_code") and x.status_code == 200 and x.json()]:
             if "poloniex" in r.url:
                 data = r.json()["BTC_SBD"]
                 if verbose:
-                    print("Spread on Poloniex is %.2f%%" % Tickefs.calc_spread(data['highestBid'], data['lowestAsk']))
+                    print("Spread on Poloniex is %.2f%%" % Tickers.calc_spread(data['highestBid'], data['lowestAsk']))
                 prices['poloniex'] = {'price': float(data['last']), 'volume': float(data['baseVolume'])}
             elif "bittrex" in r.url:
                 data = r.json()["result"]
