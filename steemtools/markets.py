@@ -43,7 +43,7 @@ class Tickers(object):
             pprint(prices)
 
         if len(prices) == 0:
-            raise Exception("Obtaining BTC/USD prices has failed from all sources.")
+            raise RuntimeError("Obtaining BTC/USD prices has failed from all sources.")
 
         # vwap
         return np.average([x['price'] for x in prices.values()], weights=[x['volume'] for x in prices.values()])
@@ -68,7 +68,7 @@ class Tickers(object):
                 prices['bittrex'] = {'price': price, 'volume': 0}
 
         if len(prices) == 0:
-            raise Exception("Obtaining STEEM/BTC prices has failed from all sources.")
+            raise RuntimeError("Obtaining STEEM/BTC prices has failed from all sources.")
 
         return np.mean([x['price'] for x in prices.values()])
 
@@ -96,7 +96,7 @@ class Tickers(object):
                 prices['bittrex'] = {'price': price, 'volume': 0}
 
         if len(prices) == 0:
-            raise Exception("Obtaining SBD/BTC prices has failed from all sources.")
+            raise RuntimeError("Obtaining SBD/BTC prices has failed from all sources.")
 
         return np.mean([x['price'] for x in prices.values()])
 

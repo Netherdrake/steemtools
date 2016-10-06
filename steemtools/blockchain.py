@@ -58,7 +58,7 @@ class Blockchain(object):
 
                 block = self.steem.rpc.get_block(current_block)
                 if block is None:
-                    raise Exception('Block is None. Are you trying to fetch a block from the future?')
+                    raise LookupError('Block is None. Are you trying to fetch a block from the future?')
                 for operation in self.parse_block(block, current_block, **kwargs):
                     if filter_by is None:
                         yield operation

@@ -1,6 +1,7 @@
 import datetime
 import math
 import time
+from collections import namedtuple
 
 import dateutil
 import numpy as np
@@ -62,7 +63,8 @@ class Account(object):
             if total_payout >= payout_requirement:
                 winning_posts += 1
 
-        return winning_posts, len(blog)
+        nt = namedtuple('WinningPosts', ['winners', 'blog_posts'])
+        return nt(winning_posts, len(blog))
 
     def avg_payout_per_post(self, skip=1, max_posts=10):
         total_payout = 0
