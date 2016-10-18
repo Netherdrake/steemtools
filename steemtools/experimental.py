@@ -196,9 +196,9 @@ class Transactions(object):
         op = Transfer_from_savings(
             **{
                 "from": transfer_from,
+                "request_id": request_id,
                 "to": transfer_to,
                 "amount": "%s %s" % (amount, currency),
-                "request_id": request_id,
                 "memo": memo,
             }
         )
