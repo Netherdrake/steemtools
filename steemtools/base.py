@@ -184,14 +184,14 @@ class Account(object):
     def virtual_op_count(self):
         return self.steem.rpc.get_account_history(self.name, -1, 0)[0][0]
 
-    def history(self, filter_by=None, skip=0):
+    def history(self, filter_by=None, start=0):
         """
-        Take all elements from skip to last from history, oldest first.
+        Take all elements from start to last from history, oldest first.
         """
         batch_size = 100
         max_index = self.virtual_op_count()
 
-        start_index = skip + batch_size
+        start_index = start + batch_size
         i = start_index
         while True:
             if i == start_index:
@@ -239,7 +239,7 @@ class Account(object):
         if start_index < 0:
             start_index = 0
 
-        return self.history(filter_by, skip=start_index)
+        return self.history(filter_by, start=start_index)
 
     def get_account_votes(self):
         return self.steem.rpc.get_account_votes(self.name)
@@ -399,7 +399,3 @@ class Converter(object):
         _max = 2 ** 64 - 1
         return (_max * rshares) / (2 * self.CONTENT_CONSTANT + rshares)
 
-
-if __name__ == "__main__":
-    a = Account("steemq-funds")
-    print(len(list(a.history2(take=200))))
