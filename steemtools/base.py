@@ -42,6 +42,14 @@ class Account(object):
         vests = int(parse_payout(self.get_props()['vesting_shares']))
         return self.converter.vests_to_sp(vests)
 
+    def get_balances(self):
+        my_account_balances = self.steem.get_balances(self.name)
+        return {
+            "steem": parse_payout(my_account_balances["balance"]),
+            "sbd": parse_payout(my_account_balances["sbd_balance"]),
+            "vests": parse_payout(my_account_balances["vesting_shares"]),
+        }
+
     def reputation(self):
         rep = int(self.get_props()['reputation'])
         if rep < 0:
@@ -171,11 +179,14 @@ class Account(object):
             },
         }
 
-    def history(self, filter_by=None):
+    def virtual_op_count(self):
+        return self.steem.rpc.get_account_history(self.name, -1, 0)[0][0]
+
+    def history(self, filter_by=None, skip=0):
         item_id_repeat = 0
         all_ids = []
 
-        i = 0
+        i = skip
         while True:
             i += 1
             history = self.steem.rpc.get_account_history(self.name, i, 1)
