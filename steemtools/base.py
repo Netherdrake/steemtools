@@ -9,9 +9,11 @@ import piston
 from dateutil import parser
 from steemtools.helpers import read_asset, parse_payout, time_diff, simple_cache
 from steemtools.node import Node
+from tqdm import tqdm
 
 from werkzeug.contrib.cache import SimpleCache
-base_cache = SimpleCache() # is this threadsafe?
+
+base_cache = SimpleCache()  # is this threadsafe?
 
 
 class Account(object):
@@ -183,30 +185,34 @@ class Account(object):
         return self.steem.rpc.get_account_history(self.name, -1, 0)[0][0]
 
     def history(self, filter_by=None, skip=0):
-        item_id_repeat = 0
-        all_ids = []
+        """
+        Take all elements from skip to last from history, oldest first.
+        """
+        batch_size = 100
+        max_index = self.virtual_op_count()
 
-        i = skip
+        start_index = skip + batch_size
+        i = start_index
         while True:
-            i += 1
-            history = self.steem.rpc.get_account_history(self.name, i, 1)
-
+            if i == start_index:
+                limit = batch_size
+            else:
+                limit = batch_size - 1
+            history = self.steem.rpc.get_account_history(self.name, i, limit)
             for item in history:
-                id = item[1]['id']
-                if item_id_repeat > 100:
+                index = item[0]
+                if index >= max_index:
                     return
-                if id in all_ids:
-                    item_id_repeat += 1
-                    break
-                all_ids.append(id)
-                item_id_repeat = 0
 
                 op_type = item[1]['op'][0]
                 op = item[1]['op'][1]
                 timestamp = item[1]['timestamp']
+                trx_id = item[1]['trx_id']
 
                 def construct_op():
                     return {
+                        "index": index,
+                        "trx_id": trx_id,
                         "timestamp": timestamp,
                         "op_type": op_type,
                         "op": op,
@@ -222,44 +228,18 @@ class Account(object):
                     if type(filter_by) is str:
                         if op_type == filter_by:
                             yield construct_op()
+            i += batch_size
 
-    def history2(self, filter_by=None, limit=1000):
-        item_id_repeat = 0
-        all_ids = []
+    def history2(self, filter_by=None, take=1000):
+        """
+        Take X elements from most recent history, oldest first.
+        """
+        max_index = self.virtual_op_count()
+        start_index = max_index - take
+        if start_index < 0:
+            start_index = 0
 
-        history = self.steem.rpc.get_account_history(self.name, -1, limit)
-
-        for item in history:
-            id = item[1]['id']
-            if item_id_repeat > 100:
-                return
-            if id in all_ids:
-                item_id_repeat += 1
-                break
-            all_ids.append(id)
-            item_id_repeat = 0
-
-            op_type = item[1]['op'][0]
-            op = item[1]['op'][1]
-            timestamp = item[1]['timestamp']
-
-            def construct_op():
-                return {
-                    "timestamp": timestamp,
-                    "op_type": op_type,
-                    "op": op,
-                }
-
-            if filter_by is None:
-                yield construct_op()
-            else:
-                if type(filter_by) is list:
-                    if op_type in filter_by:
-                        yield construct_op()
-
-                if type(filter_by) is str:
-                    if op_type == filter_by:
-                        yield construct_op()
+        return self.history(filter_by, skip=start_index)
 
     def get_account_votes(self):
         return self.steem.rpc.get_account_votes(self.name)
@@ -269,7 +249,6 @@ class Account(object):
 
     def get_conversion_requests(self):
         return self.steem.rpc.get_conversion_requests(self.name)
-
 
     @staticmethod
     def filter_by_date(items, start_time, end_time=None):
@@ -370,11 +349,11 @@ class Converter(object):
         self.steem = steem
         self.CONTENT_CONSTANT = 2000000000000
 
-    @simple_cache(base_cache, timeout=5*60)
+    @simple_cache(base_cache, timeout=5 * 60)
     def sbd_median_price(self):
         return read_asset(self.steem.rpc.get_feed_history()['current_median_history']['base'])['value']
 
-    @simple_cache(base_cache, timeout=5*60)
+    @simple_cache(base_cache, timeout=5 * 60)
     def steem_per_mvests(self):
         info = self.steem.rpc.get_dynamic_global_properties()
         return (
@@ -419,3 +398,8 @@ class Converter(object):
     def rshares_2_weight(self, rshares):
         _max = 2 ** 64 - 1
         return (_max * rshares) / (2 * self.CONTENT_CONSTANT + rshares)
+
+
+if __name__ == "__main__":
+    a = Account("steemq-funds")
+    print(len(list(a.history2(take=200))))
