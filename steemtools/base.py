@@ -145,7 +145,7 @@ class Account(object):
         reward_24h = 0.0
         reward_7d = 0.0
 
-        for event in self.history2(filter_by="curation_reward", limit=2000):
+        for event in self.history2(filter_by="curation_reward", take=2000):
 
             if parser.parse(event['timestamp'] + "UTC").timestamp() > trailing_7d_t:
                 reward_7d += parse_payout(event['op']['reward'])
