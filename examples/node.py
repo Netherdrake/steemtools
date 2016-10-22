@@ -14,7 +14,7 @@ from steemtools.base import Account
 #     "market_history_api",
 #     "tag_api",
 # ]
-# node.custom_node = Steem(
+# Node._default = Steem(
 #      node=os.getenv('STEEM_NODE', "wss://node.steem.ws"),
 #      apis=_apis,
 #      expires=600,
