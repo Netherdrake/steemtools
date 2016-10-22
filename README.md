@@ -18,31 +18,6 @@ Please see [examples](https://github.com/Netherdrake/steemtools/tree/master/exam
 
 ------------
 
-## Known Issues
-### Currently, a develop version of Piston is required
-You can install it by running this after installing `steemtools`:
-```
-pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/piston@develop
-pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/python-steemlib@develop
-pip install --upgrade --no-deps --force-reinstall  git+git://github.com/xeroc/python-graphenelib@develop
-```
-
-### Websocket issue
-If you run into this error:
-```
-ImportError: cannot import name 'create_connection'`
-```
-
-You need to reinstall websocket:
-```
-pip uninstall websocket
-pip uninstall websocket-client
-pip install websocket
-pip install websocket-client
-```
-
-------------
-
 ## Install a local node (optional)
 >Having a local node is highly recommended for blockchain parsing, or applications that need low latency/high reliability.
 
