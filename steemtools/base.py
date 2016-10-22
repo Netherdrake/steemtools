@@ -40,6 +40,14 @@ class Account(object):
             self._blog = self.steem.get_blog(self.name)
         return self._blog
 
+    @property
+    def sp(self):
+        return self.get_sp()
+
+    @property
+    def rep(self):
+        return self.reputation()
+
     def get_sp(self):
         vests = int(parse_payout(self.get_props()['vesting_shares']))
         return self.converter.vests_to_sp(vests)
