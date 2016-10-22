@@ -3,10 +3,12 @@ import ssl
 import websocket
 from piston.steem import Steem
 
-custom_node = None
-
 
 class Node(object):
+    # this allows us to override the steam instance for all instances of Node
+    # and therefore all users of Node().default()
+    _default = None
+
     def __init__(self):
         self._nodes = {
             "local": ["ws://127.0.0.1:8090"],
@@ -26,9 +28,9 @@ class Node(object):
         """
         This will try local node first, and automatically fallback to public nodes.
         """
-        if custom_node:
-            return custom_node
-        nodes = self.find_local_nodes()+self._nodes['public']
+        if self._default:
+            return self._default
+        nodes = self.find_local_nodes() + self._nodes['public']
         return Steem(node=nodes, apis=self._apis, **kwargs)
 
     def public(self, **kwargs):
