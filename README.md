@@ -15,6 +15,18 @@ Please see [examples](https://github.com/Netherdrake/steemtools/tree/master/exam
 ## 3rd party
 [> Automatic failover for witnesses by @jesta](https://steemit.com/witness-category/@jesta/steemtools-automatic-failover-for-witness-nodes)
 
+## Known Issues
+steemtools depends on Piston, and Piston depends on scrypt.
+If you get an error like this during installation:
+```
+fatal error: openssl/aes.h: No such file or directory
+
+```
+
+You can fix this by installing `libssl-dev`:
+```
+sudo apt-get install libssl-dev
+```
 
 ------------
 
