@@ -196,7 +196,7 @@ class Account(object):
         """
         Take all elements from start to last from history, oldest first.
         """
-        batch_size = 100
+        batch_size = 1000
         max_index = self.virtual_op_count()
 
         start_index = start + batch_size
