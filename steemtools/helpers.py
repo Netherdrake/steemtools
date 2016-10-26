@@ -61,3 +61,27 @@ def time_elapsed(time1):
 
 def parse_time(block_time):
     return dateutil.parser.parse(block_time + "UTC").astimezone(datetime.timezone.utc)
+
+
+def translate_tag(tag):
+    if not (hasattr(translate_tag, "cyr_chars") and
+            hasattr(translate_tag, "lat_chars") and
+            hasattr(translate_tag, "cyr_prefix")):
+        translate_tag.cyr_chars = "щ    ш  ч  ц  й  ё  э  ю  я  х  ж  а б в г д е з и к л м н о п р с т у ф ъ  ы ь".split()
+        translate_tag.lat_chars = "shch sh ch cz ij yo ye yu ya kh zh a b v g d e z i k l m n o p r s t u f xx y x".split()
+        translate_tag.cyr_prefix = "ru--"
+
+    if "а" <= tag[:1] <= "я" or tag.startswith("ё"):
+        prefix = translate_tag.cyr_prefix
+        table = zip(translate_tag.cyr_chars, translate_tag.lat_chars)
+    elif tag.startswith(translate_tag.cyr_prefix):
+        prefix = ""
+        table = zip(translate_tag.lat_chars, translate_tag.cyr_chars)
+        tag = tag[4:]
+    else:
+        prefix = ""
+        table = []
+
+    for l, i in table:
+        tag = i.join(tag.split(l))
+    return prefix + tag
