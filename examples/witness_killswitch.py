@@ -7,7 +7,7 @@ from steemtools.node import Node
 steem = Node().default()
 
 witness_name = "furion"
-witness_wif = "<PRIVATE_ACTIVE_KEY>"
+active_key = "<PRIVATE_ACTIVE_KEY>"
 
 missed = steem.rpc.get_witness_by_account(witness_name)['total_missed']
 treshold = missed + 10
@@ -20,8 +20,10 @@ while True:
             "maximum_block_size": 65536,
             "sbd_interest_rate": 500,
         }
-        tx = t.witness_update(witness_name, "", "https://steemdb.com/@furion/witness", props,
-                              witness_wif, sim_mode=False)
+        tx = t.witness_update(witness_name=witness_name, signing_key=None,
+                              url="https://steemdb.com/@furion/witness", props=props,
+                              wif=active_key, sim_mode=False)
+
         pprint(tx)
         quit("Witness %s Disabled!" % witness_name)
 
