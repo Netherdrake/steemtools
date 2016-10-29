@@ -190,10 +190,12 @@ class Account(object):
         }
 
     def virtual_op_count(self):
-        last_item = self.steem.rpc.get_account_history(self.name, -1, 0)
-        if not last_item:
+        try:
+            last_item = self.steem.rpc.get_account_history(self.name, -1, 0)[0][0]
+        except IndexError:
             return 0
-        return last_item[0][0]
+        else:
+            return last_item
 
     def history(self, filter_by=None, start=0):
         """
@@ -201,6 +203,8 @@ class Account(object):
         """
         batch_size = 1000
         max_index = self.virtual_op_count()
+        if not max_index:
+            return
 
         start_index = start + batch_size
         i = start_index
