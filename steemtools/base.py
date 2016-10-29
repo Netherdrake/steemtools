@@ -153,7 +153,7 @@ class Account(object):
         reward_24h = 0.0
         reward_7d = 0.0
 
-        for event in self.history2(filter_by="curation_reward", take=2000):
+        for event in self.history2(filter_by="curation_reward", take=10000):
 
             if parser.parse(event['timestamp'] + "UTC").timestamp() > trailing_7d_t:
                 reward_7d += parse_payout(event['op']['reward'])
@@ -190,7 +190,10 @@ class Account(object):
         }
 
     def virtual_op_count(self):
-        return self.steem.rpc.get_account_history(self.name, -1, 0)[0][0]
+        last_item = self.steem.rpc.get_account_history(self.name, -1, 0)
+        if not last_item:
+            return 0
+        return last_item[0][0]
 
     def history(self, filter_by=None, start=0):
         """
