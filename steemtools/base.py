@@ -1,7 +1,9 @@
 import datetime
+import json
 import math
 import time
 from collections import namedtuple
+from contextlib import suppress
 
 import dateutil
 import numpy as np
@@ -293,6 +295,14 @@ class Post(piston.steem.Post):
         if isinstance(post, piston.steem.Post):
             post = post.identifier
         super(Post, self).__init__(steem, post)
+
+    @property
+    def meta(self):
+        meta = {}
+        with suppress(Exception):
+            meta_str = self.get("json_metadata", "")
+            meta = json.loads(meta_str)
+        return meta
 
     def is_comment(self):
         if len(self['title']) == 0:
