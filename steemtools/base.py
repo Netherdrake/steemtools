@@ -39,7 +39,11 @@ class Account(object):
 
     def get_blog(self):
         if self._blog is None:
-            self._blog = self.steem.get_blog(self.name)
+            def _get_blog(steem, user):
+                state = steem.rpc.get_state("/@%s/blog" % user)
+                posts = state["accounts"][user].get("blog", [])
+                return [piston.steem.Post(steem, "@%s" % x) for x in posts if x]
+            self._blog = _get_blog(self.steem, self.name)
         return self._blog
 
     @property
