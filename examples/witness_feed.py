@@ -38,7 +38,7 @@ if __name__ == '__main__':
         print("Implied STEEM/USD price is: %.3f" % current_price)
 
         # if price diverged for more than our defined %, update the feed
-        spread = abs(markets.calc_spread(last_price, current_price))
+        spread = abs(markets.calc_spread(last_price, current_price/float(quote)))
         print("Spread Between Prices: %.3f%%" % spread)
         if spread > settings['minimum_spread_pct']:
             tx = Transactions().witness_feed_publish(current_price, witness, wif, quote=quote, sim_mode=False)
