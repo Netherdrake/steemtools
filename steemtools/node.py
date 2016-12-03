@@ -12,7 +12,7 @@ class Node(object):
     def __init__(self):
         self._nodes = {
             "local": ["ws://127.0.0.1:8090"],
-            "public": ["wss://this.piston.rocks", "wss://node.steem.ws"],
+            "public": ["wss://steemit.com/wspa", "wss://this.piston.rocks", "wss://node.steem.ws"],
         }
 
         self._apis = [
