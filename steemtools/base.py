@@ -9,7 +9,7 @@ import dateutil
 import numpy as np
 import piston
 from dateutil import parser
-from steemtools.helpers import read_asset, parse_payout, time_diff, simple_cache
+from steemtools.helpers import read_asset, parse_payout, time_diff, simple_cache, remove_from_dict
 from steemtools.node import Node
 from werkzeug.contrib.cache import SimpleCache
 
@@ -41,6 +41,7 @@ class Account(object):
                 state = steem.rpc.get_state("/@%s/blog" % user)
                 posts = state["accounts"][user].get("blog", [])
                 return [piston.steem.Post(steem, "@%s" % x) for x in posts if x]
+
             self._blog = _get_blog(self.steem, self.name)
         return self._blog
 
@@ -299,10 +300,17 @@ class Post(piston.steem.Post):
         super(Post, self).__init__(steem, post)
 
     @property
+    def payout(self):
+        return parse_payout(self['total_payout_reward'])
+
+    @property
     def meta(self):
         with suppress(Exception):
             meta_str = self.get("json_metadata", "")
             return json.loads(meta_str)
+
+    def is_main_post(self):
+        return len(self['title']) > 0 and not self['depth'] and not self['parent_author']
 
     def is_comment(self):
         if len(self['title']) == 0:
@@ -342,29 +350,19 @@ class Post(piston.steem.Post):
             "time_elapsed": self.time_elapsed(),
         }
 
-    def contains_tags(self, filter_by=('spam', 'test', 'nsfw')):
-        for tag in filter_by:
-            if tag in self['_tags']:
-                return True
-
-        return False
-
-    def get_url(self):
-        return "https://steemit.com/%s/%s" % (self.category, self.identifier)
-
     def time_elapsed(self):
         created_at = parser.parse(self['created'] + "UTC").timestamp()
         now_adjusted = time.time()
         return now_adjusted - created_at
-
-    def payout(self):
-        return parse_payout(self['total_payout_reward'])
 
     def calc_reward_pct(self):
         reward = (self.time_elapsed() / 1800) * 100
         if reward > 100:
             reward = 100
         return reward
+
+    def mongo_safe(self):
+        return remove_from_dict(self, ['steem'])
 
 
 class Converter(object):
@@ -423,4 +421,3 @@ class Converter(object):
     def rshares_2_weight(self, rshares):
         _max = 2 ** 64 - 1
         return (_max * rshares) / (2 * self.CONTENT_CONSTANT + rshares)
-
