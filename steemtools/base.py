@@ -11,8 +11,6 @@ import piston
 from dateutil import parser
 from steemtools.helpers import read_asset, parse_payout, time_diff, simple_cache
 from steemtools.node import Node
-from tqdm import tqdm
-
 from werkzeug.contrib.cache import SimpleCache
 
 base_cache = SimpleCache()  # is this threadsafe?
@@ -302,11 +300,9 @@ class Post(piston.steem.Post):
 
     @property
     def meta(self):
-        meta = {}
         with suppress(Exception):
             meta_str = self.get("json_metadata", "")
-            meta = json.loads(meta_str)
-        return meta
+            return json.loads(meta_str)
 
     def is_comment(self):
         if len(self['title']) == 0:
