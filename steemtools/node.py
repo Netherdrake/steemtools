@@ -22,6 +22,7 @@ class Node(object):
             "follow_api",
             "market_history_api",
             "tag_api",
+            "account_by_key",
         ]
 
     def default(self, **kwargs):
