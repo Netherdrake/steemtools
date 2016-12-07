@@ -7,7 +7,7 @@ from contextlib import suppress
 
 import dateutil
 import numpy as np
-import piston
+import steem as stm
 from dateutil import parser
 from funcy import walk_keys
 from steemtools.helpers import read_asset, parse_payout, time_diff, simple_cache, remove_from_dict
@@ -41,7 +41,7 @@ class Account(object):
             def _get_blog(steem, user):
                 state = steem.rpc.get_state("/@%s/blog" % user)
                 posts = state["accounts"][user].get("blog", [])
-                return [piston.steem.Post(steem, "@%s" % x) for x in posts if x]
+                return [stm.steem.Post(steem, "@%s" % x) for x in posts if x]
 
             self._blog = _get_blog(self.steem, self.name)
         return self._blog
@@ -318,11 +318,11 @@ class Account(object):
         }
 
 
-class Post(piston.steem.Post):
+class Post(stm.steem.Post):
     def __init__(self, post, steem=None):
         if not steem:
             steem = Node().default()
-        if isinstance(post, piston.steem.Post):
+        if isinstance(post, stm.steem.Post):
             post = post.identifier
         super(Post, self).__init__(steem, post)
 

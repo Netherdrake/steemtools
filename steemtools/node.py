@@ -1,7 +1,7 @@
 import ssl
 
 import websocket
-from piston.steem import Steem
+from steem.steem import Steem
 
 
 class Node(object):
