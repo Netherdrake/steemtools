@@ -9,6 +9,7 @@ import dateutil
 import numpy as np
 import piston
 from dateutil import parser
+from funcy import walk_keys
 from steemtools.helpers import read_asset, parse_payout, time_diff, simple_cache, remove_from_dict
 from steemtools.node import Node
 from werkzeug.contrib.cache import SimpleCache
@@ -44,6 +45,12 @@ class Account(object):
 
             self._blog = _get_blog(self.steem, self.name)
         return self._blog
+
+    @property
+    def profile(self):
+        with suppress(Exception):
+            meta_str = self.get_props().get("json_metadata", "")
+            return json.loads(meta_str).get('profile', dict())
 
     @property
     def sp(self):
@@ -290,6 +297,26 @@ class Account(object):
 
         return filtered_items
 
+    def mongo_export(self):
+        followers = self.get_followers()
+        following = self.get_following()
+
+        return {
+            **self.get_props(),
+            "profile": self.profile,
+            "sp": self.sp,
+            "rep": self.rep,
+            "balances": walk_keys(str.upper, self.get_balances()),
+            "followers": followers,
+            "followers_count": len(followers),
+            "following": following,
+            "following_count": len(following),
+            "curation_stats": self.curation_stats(),
+            "withdrawal_routes": self.get_withdraw_routes(),
+            "conversion_requests": self.get_conversion_requests(),
+            "account_votes": self.get_account_votes(),
+        }
+
 
 class Post(piston.steem.Post):
     def __init__(self, post, steem=None):
@@ -361,7 +388,7 @@ class Post(piston.steem.Post):
             reward = 100
         return reward
 
-    def mongo_safe(self):
+    def mongo_export(self):
         return remove_from_dict(self, ['steem'])
 
 
