@@ -8,7 +8,7 @@ here = path.abspath(path.dirname(__file__))
 
 assert sys.version_info[0] == 3, "steemtools requires Python > 3"
 
-VERSION = '1.3.4'
+VERSION = '1.4.0'
 
 setup(
     name='steemtools',
