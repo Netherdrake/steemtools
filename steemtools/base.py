@@ -10,7 +10,8 @@ import numpy as np
 import steem as stm
 from dateutil import parser
 from funcy import walk_keys
-from steemtools.helpers import read_asset, parse_payout, time_diff, simple_cache, remove_from_dict
+from steem.amount import Amount
+from steemtools.helpers import time_diff, simple_cache, remove_from_dict
 from steemtools.node import Node
 from werkzeug.contrib.cache import SimpleCache
 
@@ -61,15 +62,15 @@ class Account(object):
         return self.reputation()
 
     def get_sp(self):
-        vests = int(parse_payout(self.get_props()['vesting_shares']))
+        vests = Amount(self.get_props()['vesting_shares']).amount
         return self.converter.vests_to_sp(vests)
 
     def get_balances(self):
         my_account_balances = self.steem.get_balances(self.name)
         return {
-            "steem": parse_payout(my_account_balances["balance"]),
-            "sbd": parse_payout(my_account_balances["sbd_balance"]),
-            "vests": parse_payout(my_account_balances["vesting_shares"]),
+            "STEEM": my_account_balances["balance"].amount,
+            "SBD": my_account_balances["sbd_balance"].amount,
+            "VESTS": my_account_balances["vesting_shares"].amount,
         }
 
     def reputation(self):
@@ -89,7 +90,7 @@ class Account(object):
         winning_posts = 0
         blog = self.get_blog()[skip:max_posts + skip]
         for post in blog:
-            total_payout = parse_payout(post['total_payout_reward'])
+            total_payout = Amount(post['total_payout_reward']).amount
             if total_payout >= payout_requirement:
                 winning_posts += 1
 
@@ -100,7 +101,7 @@ class Account(object):
         total_payout = 0
         blog = self.get_blog()[skip:max_posts + skip]
         for post in blog:
-            total_payout += parse_payout(post['total_payout_reward'])
+            total_payout += Amount(post['total_payout_reward']).amount
 
         if len(blog) == 0:
             return 0
@@ -168,10 +169,10 @@ class Account(object):
         for event in self.history2(filter_by="curation_reward", take=10000):
 
             if parser.parse(event['timestamp'] + "UTC").timestamp() > trailing_7d_t:
-                reward_7d += parse_payout(event['op']['reward'])
+                reward_7d += Amount(event['op']['reward']).amount
 
             if parser.parse(event['timestamp'] + "UTC").timestamp() > trailing_24hr_t:
-                reward_24h += parse_payout(event['op']['reward'])
+                reward_24h += Amount(event['op']['reward']).amount
 
         reward_7d = self.converter.vests_to_sp(reward_7d)
         reward_24h = self.converter.vests_to_sp(reward_24h)
@@ -328,7 +329,7 @@ class Post(stm.steem.Post):
 
     @property
     def payout(self):
-        return parse_payout(self['total_payout_reward'])
+        return Amount(self['total_payout_reward']).amount
 
     @property
     def meta(self):
@@ -401,14 +402,14 @@ class Converter(object):
 
     @simple_cache(base_cache, timeout=5 * 60)
     def sbd_median_price(self):
-        return read_asset(self.steem.rpc.get_feed_history()['current_median_history']['base'])['value']
+        return Amount(self.steem.rpc.get_feed_history()['current_median_history']['base']).amount
 
     @simple_cache(base_cache, timeout=5 * 60)
     def steem_per_mvests(self):
         info = self.steem.rpc.get_dynamic_global_properties()
         return (
-            parse_payout(info["total_vesting_fund_steem"]) /
-            (parse_payout(info["total_vesting_shares"]) / 1e6)
+            Amount(info["total_vesting_fund_steem"]).amount /
+            (Amount(info["total_vesting_shares"]).amount / 1e6)
         )
 
     def vests_to_sp(self, vests):
@@ -437,7 +438,7 @@ class Converter(object):
         steem_payout = self.sbd_to_steem(sbd_payout)
 
         props = self.steem.rpc.get_dynamic_global_properties()
-        total_reward_fund_steem = read_asset(props['total_reward_fund_steem'])['value']
+        total_reward_fund_steem = Amount(props['total_reward_fund_steem']).amount
         total_reward_shares2 = int(props['total_reward_shares2'])
 
         post_rshares2 = (steem_payout / total_reward_fund_steem) * total_reward_shares2

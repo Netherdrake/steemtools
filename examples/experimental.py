@@ -1,8 +1,7 @@
 from pprint import pprint
 
-
+from steem.amount import Amount
 from steemtools.experimental import Transactions
-from steemtools.helpers import read_asset
 from steemtools.node import Node
 
 steem = Node().default()
@@ -26,7 +25,7 @@ def get_active_key_from_piston_wallet(account_name):
 def power_up():
     wif = get_active_key_from_piston_wallet("furion")
     my_account_balances = steem.get_balances("furion")
-    steem_balance = read_asset(my_account_balances["balance"])['value']
+    steem_balance = Amount(my_account_balances["balance"]).amount
     if wif and steem_balance > 0.1:
         tx = Transactions().transfer_to_vesting("furion", 0.1, "furion", wif, sim_mode=True)
         print(tx)

@@ -1,7 +1,6 @@
-from pprint import pprint
-
+from steem.amount import Amount
 from steemtools.base import Account
-from steemtools.helpers import parse_payout, is_comment
+from steemtools.helpers import is_comment
 
 # get all posts from August
 account = Account("furion")
@@ -18,4 +17,4 @@ print([x['op']['title'] for x in Account.filter_by_date(account.history(filter_b
 for event in Account("furion").history(filter_by=["transfer"]):
     transfer = event['op']
     if transfer['to'] == "null":
-        print("$%.1f :: %s" % (parse_payout(transfer['amount']), transfer['memo']))
+        print("$%.1f :: %s" % (Amount(transfer['amount']).amount, transfer['memo']))

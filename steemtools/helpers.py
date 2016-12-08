@@ -1,5 +1,4 @@
 import datetime
-import re
 import time
 
 import dateutil
@@ -27,16 +26,6 @@ def simple_cache(func, cache_obj, timeout=3600):
         out = func()
         cache_obj.set(name, out, timeout=timeout)
         return out
-
-
-def read_asset(asset_string):
-    re_asset = re.compile(r'(?P<number>\d*\.?\d+)\s?(?P<unit>[a-zA-Z]+)')
-    res = re_asset.match(asset_string)
-    return {'value': float(res.group('number')), 'symbol': res.group('unit')}
-
-
-def parse_payout(payout):
-    return read_asset(payout)['value']
 
 
 def time_diff(time1, time2):
