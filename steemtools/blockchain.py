@@ -115,10 +115,6 @@ class Blockchain(object):
 
         return int(guess_block)
 
-    def get_all_usernames(self, last_user=-1):
-        usernames = self.steem.rpc.lookup_accounts(last_user, 1000)
-        if len(usernames) == 1000:
-            usernames += self.get_all_usernames(usernames[-1])[1:]
-
-        return usernames
+    def get_all_usernames(self):
+        return self.steem.rpc.lookup_accounts('', 1e6)
 
