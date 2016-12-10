@@ -1,3 +1,14 @@
+## Deprecation Warning
+This library has been merged into [python-steem](https://github.com/xeroc/python-steem), and is no longer actively maintained.
+
+Thank you for all the support,
+
+@furion
+
+----------------
+
+----------------
+
 ## Installation
 ```
 pip install -U steemtools
