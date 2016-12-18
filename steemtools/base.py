@@ -325,7 +325,7 @@ class Post(stm.steem.Post):
             steem = Node().default()
         if isinstance(post, stm.steem.Post):
             post = post.identifier
-        super(Post, self).__init__(steem, post)
+        super(Post, self).__init__(post, steem)
 
     @property
     def payout(self):
