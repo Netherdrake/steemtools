@@ -158,16 +158,6 @@ class Blockchain(object):
         if isinstance(filter_by, str):
             filter_by = [filter_by]
 
-        # for block in self.blocks(*args, **kwargs):
-        #     for tx in block.get("transactions"):
-        #         for op in tx["operations"]:
-        #             yield {
-        #                 **op[1],
-        #                 "type": op[0],
-        #                 "timestamp": block.get("timestamp"),
-        #                 "block_num": block.get("block_num")
-        #             }.update(op[1])
-
         for event in self.ops(*args, **kwargs):
             op_type, op = event['op']
             if not filter_by or op_type in filter_by:
@@ -229,25 +219,14 @@ class Blockchain(object):
             error = timestring_timestamp - guess_block_timestamp
         return int(guess_block)
 
+    def get_all_usernames(self, last_user=-1):
+        usernames = self.steem.rpc.lookup_accounts(last_user, 1000)
+        batch = []
+        while len(batch) != 1:
+            batch = self.steem.rpc.lookup_accounts(usernames[-1], 1000)
+            usernames += batch[1:]
 
-def get_all_usernames(last_user=-1, steem=None):
-    if not steem:
-        steem = stm.Steem()
-
-    usernames = steem.rpc.lookup_accounts(last_user, 1000)
-    batch = []
-    while len(batch) != 1:
-        batch = steem.rpc.lookup_accounts(usernames[-1], 1000)
-        usernames += batch[1:]
-
-    return usernames
-
-
-def get_usernames_batch(last_user=-1, steem=None):
-    if not steem:
-        steem = stm.Steem()
-
-    return steem.rpc.lookup_accounts(last_user, 1000)
+        return usernames
 
 
 if __name__ == '__main__':
