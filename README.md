@@ -9,7 +9,7 @@ pip install -U steemtools
 ```
 
 ## Documentation
-See the source.
+See the [source](https://github.com/Netherdrake/steemtools/tree/master/steemtools).
 
 ¯\_(ツ)_/¯
 
