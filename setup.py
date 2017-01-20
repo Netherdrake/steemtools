@@ -37,7 +37,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        'steem-piston',
+        'steem==0.4.1',
         'python-dateutil',
         'requests',
         'grequests',
